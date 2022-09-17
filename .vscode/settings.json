@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "*.env.example": "dotenv",
+        "*.env.defaults": "dotenv",
+    },
+    "editor.formatOnSave": true,
+    "deno.enable": true,
+    "deno.unstable": true,
+    "[typescript]": {
+        "editor.defaultFormatter": "denoland.vscode-deno"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "denoland.vscode-deno"
+    },
+    "deno.suggest.imports.hosts": {
+        "https://deno.land": false
+    }
+}
