@@ -1,5 +1,8 @@
-import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
-import { MongoClient, ObjectId } from "./deps.ts";
+import { puppeteer } from "./deps.ts";
+
+/*
+// Simple MongoDB Atlas connection example
+import { config, MongoClient, ObjectId } from "./deps.ts";
 
 interface L1 {
   _id: ObjectId;
@@ -16,3 +19,14 @@ const mongo_client = new MongoClient({
 });
 const planning_db = mongo_client.database("planning-v2");
 const l1 = planning_db.collection<L1>("l1");
+*/
+
+const browser = await puppeteer.launch({
+  headless: true,
+  args: ["--no-sandbox", "--disable-dev-shm-usage"],
+});
+const page = await browser.newPage();
+await page.goto("https://example.com");
+await page.screenshot({ path: "example.png" });
+
+await browser.close();
