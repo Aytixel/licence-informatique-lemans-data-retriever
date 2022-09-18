@@ -31,22 +31,23 @@ interface Day {
 const env = config();
 
 const update = async () => {
-  const planning_db = await new MongoClient().connect({
-    db: "planning-v2",
-    tls: true,
-    servers: env.MONGO_DB_HOSTS.split(",").map((host) => ({
-      host: host,
-      port: parseInt(env.MONGO_DB_PORT),
-    })),
-    credential: {
-      username: env.MONGO_DB_USERNAME,
-      password: env.MONGO_DB_PASSWORD,
-      db: "planning-v2",
-      mechanism: "SCRAM-SHA-1",
-    },
-  });
-
   try {
+    const mongo_client = new MongoClient();
+    const planning_db = await mongo_client.connect({
+      db: "planning-v2",
+      tls: true,
+      servers: env.MONGO_DB_HOSTS.split(",").map((host) => ({
+        host: host,
+        port: parseInt(env.MONGO_DB_PORT),
+      })),
+      credential: {
+        username: env.MONGO_DB_USERNAME,
+        password: env.MONGO_DB_PASSWORD,
+        db: "planning-v2",
+        mechanism: "SCRAM-SHA-1",
+      },
+    });
+
     console.log(
       "start retrieving data at : " + new Date().toLocaleString() + "\n",
     );
@@ -120,6 +121,8 @@ const update = async () => {
     console.log(
       "stop retrieving data at : " + new Date().toLocaleString() + "\n\n\n",
     );
+
+    mongo_client.close();
 
     setTimeout(update, 1000 * 60 * 60 * 2);
   } catch (error) {
