@@ -14,7 +14,7 @@ export default async function (project_id, planning_resources) {
     )).text();
   };
 
-  for (resource_type_key in planning_resources) {
+  for (const resource_type_key in planning_resources) {
     for (
       let resource_id_index = 0;
       resource_id_index < planning_resources[resource_type_key].length;
