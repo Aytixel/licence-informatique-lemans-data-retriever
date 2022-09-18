@@ -1,4 +1,4 @@
-import { config, ICAL, puppeteer } from "./deps.ts";
+import { config, puppeteer } from "./deps.ts";
 import login from "./login.ts";
 import retriever from "./browser/retriever.js";
 
@@ -31,12 +31,11 @@ const browser = await puppeteer.launch({
 const page = await login(env, browser);
 
 console.log(
-  new ICAL.Event(new ICAL.Component(ICAL.parse(
-    await page.evaluate(
-      retriever,
-      env.PROJECT_ID,
-    ),
-  )).getFirstSubcomponent("vevent")),
+  await page.evaluate(
+    retriever,
+    env.PROJECT_ID,
+    JSON.parse(await Deno.readTextFile("./src/planning-resources-id.json")),
+  ),
 );
 
 await browser.close();
