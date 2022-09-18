@@ -29,6 +29,7 @@ interface Day {
 }
 
 const env = config();
+
 const update = async () => {
   const planning_db = await new MongoClient().connect({
     db: "planning-v2",
@@ -117,11 +118,15 @@ const update = async () => {
     }
 
     console.log(
-      "stop retrieving dataat : " + new Date().toLocaleString() + "\n\n\n",
+      "stop retrieving data at : " + new Date().toLocaleString() + "\n\n\n",
     );
+
+    setTimeout(update, 1000 * 60 * 60 * 2);
   } catch (error) {
     console.error(error);
+
+    setTimeout(update, 1000 * 60 * 30);
   }
 };
 
-setInterval(update, 1000 * 60 * 60 * 2);
+update();
