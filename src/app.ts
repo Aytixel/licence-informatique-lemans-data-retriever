@@ -1,27 +1,6 @@
-import { config, ICAL } from "./deps.ts";
+import { config, ICAL, MongoClient, ObjectId } from "./deps.ts";
 import retrieve from "./retriever.ts";
 import { compare_date, keep_only_date } from "./utils.ts";
-
-/*
-// Simple MongoDB Atlas connection example
-import { config, MongoClient, ObjectId } from "./deps.ts";
-
-interface L1 {
-  _id: ObjectId;
-  date: Date;
-}
-
-const env_config = config();
-const mongo_client = new MongoClient({
-  endpoint: env_config.MONGO_DB_ATLAS_ENDPOINT,
-  dataSource: env_config.MONGO_DB_ATLAS_CLUSTER_NAME,
-  auth: {
-    apiKey: env_config.MONGO_DB_ATLAS_API_KEY,
-  },
-});
-const planning_db = mongo_client.database("planning-v2");
-const l1 = planning_db.collection<L1>("l1");
-*/
 
 interface ToDate {
   toJSDate: () => Date;
@@ -50,55 +29,75 @@ interface Day {
 }
 
 const env = config();
-const planning_raw_data = await retrieve(env);
-const plannings: any = {
-  l1: [],
-  l2: [],
-  l3: [],
-  m1: [],
-  m2: [],
-  salle_ic2: [],
-};
+const mongo_client = new MongoClient({
+  endpoint: env.MONGO_DB_ATLAS_ENDPOINT,
+  dataSource: env.MONGO_DB_ATLAS_CLUSTER_NAME,
+  auth: {
+    apiKey: env.MONGO_DB_ATLAS_API_KEY,
+  },
+});
+const planning_db = mongo_client.database("planning-v2");
 
-for (const resource_type_key in planning_raw_data) {
-  for (
-    let resource_id_index = 0;
-    resource_id_index < planning_raw_data[resource_type_key].length;
-    resource_id_index++
-  ) {
-    const planning: Day[] = [];
-    const events: Event[] = new ICAL.Component(
-      ICAL.parse(planning_raw_data[resource_type_key][resource_id_index]),
-    ).getAllSubcomponents("vevent").map((x: unknown) => new ICAL.Event(x));
+try {
+  console.log("start retrieving data\n");
+  console.log("start retrieving data with puppeteer");
 
-    events.forEach((event: Event) => {
-      const date = keep_only_date(event.startDate.toJSDate());
-      let day_index = planning.findIndex((x) => !compare_date(x.date, date));
-      const day = (day_index > -1) ? planning[day_index] : planning[
-        day_index = planning.push({
-          date: date,
-          group: resource_id_index,
-          courses: [],
-        }) - 1
-      ];
+  const planning_raw_data = await retrieve(env);
 
-      day.courses.push(
-        {
-          title: event.summary,
-          start_date: event.startDate.toJSDate(),
-          end_date: event.endDate.toJSDate(),
-          description: event.description.trim().split("\n").slice(0, -1).join(
-            "\n",
-          ),
-          room: event.location,
-        },
-      );
+  console.log("stop retrieving data with puppeteer\n");
 
-      planning[day_index] = day;
-    });
+  for (const resource_type_key in planning_raw_data) {
+    console.log("start parsing and updating " + resource_type_key);
 
-    plannings[resource_type_key].push(planning);
+    for (
+      let resource_id_index = 0;
+      resource_id_index < planning_raw_data[resource_type_key].length;
+      resource_id_index++
+    ) {
+      const planning: Day[] = [];
+      const events: Event[] = new ICAL.Component(
+        ICAL.parse(planning_raw_data[resource_type_key][resource_id_index]),
+      ).getAllSubcomponents("vevent").map((x: unknown) => new ICAL.Event(x));
+
+      for (const event of events) {
+        const date = keep_only_date(event.startDate.toJSDate());
+        let day_index = planning.findIndex((x) => !compare_date(x.date, date));
+        const day = (day_index > -1) ? planning[day_index] : planning[
+          day_index = planning.push({
+            date: date,
+            group: resource_id_index,
+            courses: [],
+          }) - 1
+        ];
+
+        day.courses.push(
+          {
+            title: event.summary,
+            start_date: event.startDate.toJSDate(),
+            end_date: event.endDate.toJSDate(),
+            description: event.description.trim().split("\n").slice(0, -1).join(
+              "\n",
+            ),
+            room: event.location,
+          },
+        );
+
+        planning[day_index] = day;
+      }
+
+      const collection = planning_db.collection(resource_type_key);
+
+      for (const day of planning) {
+        await collection.updateOne({ date: day.date, group: day.group }, {
+          $set: day,
+        }, { upsert: true });
+      }
+    }
+
+    console.log("stop parsing and updating " + resource_type_key + "\n");
   }
-}
 
-console.log(plannings);
+  console.log("stop retrieving data\n\n\n");
+} catch (error) {
+  console.error(error);
+}
