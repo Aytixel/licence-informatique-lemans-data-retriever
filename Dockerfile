@@ -15,4 +15,4 @@ ENV PATH="${DENO_INSTALL}/bin:${PATH}"
 
 WORKDIR /app
 
-CMD ["deno", "run", "--allow-net", "--allow-env", "--allow-read", "--allow-write", "--allow-run", "--unstable", "app.ts"]
+CMD ["deno", "run", "--allow-net", "--allow-env", "--allow-read", "--allow-write", "--allow-run", "--unstable", "src/app.ts"]
