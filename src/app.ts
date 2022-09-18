@@ -1,6 +1,5 @@
-import { config, puppeteer } from "./deps.ts";
-import login from "./login.ts";
-import retriever from "./browser/retriever.js";
+import { config, ICAL } from "./deps.ts";
+import retrieve from "./retriever.ts";
 
 /*
 // Simple MongoDB Atlas connection example
@@ -24,18 +23,18 @@ const l1 = planning_db.collection<L1>("l1");
 */
 
 const env = config();
-const browser = await puppeteer.launch({
-  headless: false,
-  args: ["--no-sandbox", "--disable-dev-shm-usage"],
-});
-const page = await login(env, browser);
+const planning_raw_data = await retrieve(env);
 
-console.log(
-  await page.evaluate(
-    retriever,
-    env.PROJECT_ID,
-    JSON.parse(await Deno.readTextFile("./src/planning-resources-id.json")),
-  ),
-);
-
-await browser.close();
+for (const resource_type_key in planning_raw_data) {
+  for (
+    let resource_id_index = 0;
+    resource_id_index < planning_raw_data[resource_type_key].length;
+    resource_id_index++
+  ) {
+    console.log(
+      new ICAL.Component(
+        ICAL.parse(planning_raw_data[resource_type_key][resource_id_index]),
+      ).getAllSubcomponents("vevent"),
+    );
+  }
+}

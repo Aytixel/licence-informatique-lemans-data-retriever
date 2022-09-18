@@ -1,5 +1,6 @@
 // third party modules
 export { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
+export type { DotenvConfig } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 export {
   MongoClient,
   ObjectId,
