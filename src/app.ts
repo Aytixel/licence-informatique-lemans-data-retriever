@@ -1,5 +1,6 @@
 import { config, ICAL } from "./deps.ts";
 import retrieve from "./retriever.ts";
+import { compare_date, keep_only_date } from "./utils.ts";
 
 /*
 // Simple MongoDB Atlas connection example
@@ -58,18 +59,6 @@ const plannings: any = {
   m2: [],
   salle_ic2: [],
 };
-
-/*
-first more recent   : +
-second more recent  : -
-first = second      : 0
-*/
-const compare_date = (first_date: Date, second_date: Date) =>
-  first_date.getTime() - second_date.getTime();
-
-// keep only the date part
-const keep_only_date = (date: Date) =>
-  new Date(date.getTime() - (date.getTime() % (1000 * 60 * 60 * 24)));
 
 for (const resource_type_key in planning_raw_data) {
   for (
