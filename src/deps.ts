@@ -10,6 +10,7 @@ export {
 } from "https://deno.land/x/puppeteer_plus@0.14.0/mod.ts";
 
 import puppeteer from "https://deno.land/x/puppeteer_plus@0.14.0/mod.ts";
-export { puppeteer };
+import ICAL from "https://cdn.skypack.dev/ical.js";
+export { ICAL, puppeteer };
 
 // std modules

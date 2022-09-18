@@ -1,5 +1,6 @@
-import { config, puppeteer } from "./deps.ts";
+import { config, ICAL, puppeteer } from "./deps.ts";
 import login from "./login.ts";
+import retriever from "./browser/retriever.js";
 
 /*
 // Simple MongoDB Atlas connection example
@@ -28,5 +29,14 @@ const browser = await puppeteer.launch({
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });
 const page = await login(env, browser);
+
+console.log(
+  new ICAL.Event(new ICAL.Component(ICAL.parse(
+    await page.evaluate(
+      retriever,
+      env.PROJECT_ID,
+    ),
+  )).getFirstSubcomponent("vevent")),
+);
 
 await browser.close();
