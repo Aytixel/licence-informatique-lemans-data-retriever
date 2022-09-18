@@ -1,4 +1,5 @@
-import { puppeteer } from "./deps.ts";
+import { config, puppeteer } from "./deps.ts";
+import login from "./login.ts";
 
 /*
 // Simple MongoDB Atlas connection example
@@ -21,12 +22,11 @@ const planning_db = mongo_client.database("planning-v2");
 const l1 = planning_db.collection<L1>("l1");
 */
 
+const env = config();
 const browser = await puppeteer.launch({
-  headless: true,
+  headless: false,
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });
-const page = await browser.newPage();
-await page.goto("https://example.com");
-await page.screenshot({ path: "example.png" });
+const page = await login(env, browser);
 
 await browser.close();
