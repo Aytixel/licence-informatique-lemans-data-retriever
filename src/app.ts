@@ -1,4 +1,4 @@
-import { config, ICAL, MongoClient, ObjectId } from "./deps.ts";
+import { config, ICAL, MongoClient } from "./deps.ts";
 import retrieve from "./retriever.ts";
 import { compare_date, keep_only_date } from "./utils.ts";
 
@@ -54,6 +54,8 @@ try {
       resource_id_index < planning_raw_data[resource_type_key].length;
       resource_id_index++
     ) {
+      console.log("group : " + resource_id_index);
+
       const planning: Day[] = [];
       const events: Event[] = new ICAL.Component(
         ICAL.parse(planning_raw_data[resource_type_key][resource_id_index]),
@@ -86,12 +88,17 @@ try {
       }
 
       const collection = planning_db.collection(resource_type_key);
+      const update_promises = [];
 
       for (const day of planning) {
-        await collection.updateOne({ date: day.date, group: day.group }, {
-          $set: day,
-        }, { upsert: true });
+        update_promises.push(
+          collection.updateOne({ date: day.date, group: day.group }, {
+            $set: day,
+          }, { upsert: true }),
+        );
       }
+
+      await Promise.all(update_promises);
     }
 
     console.log("stop parsing and updating " + resource_type_key + "\n");
