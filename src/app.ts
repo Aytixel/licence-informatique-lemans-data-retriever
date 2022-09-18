@@ -30,14 +30,20 @@ interface Day {
 
 const env = config();
 const update = async () => {
-  const mongo_client = new MongoClient({
-    endpoint: env.MONGO_DB_ATLAS_ENDPOINT,
-    dataSource: env.MONGO_DB_ATLAS_CLUSTER_NAME,
-    auth: {
-      apiKey: env.MONGO_DB_ATLAS_API_KEY,
+  const planning_db = await new MongoClient().connect({
+    db: "planning-v2",
+    tls: true,
+    servers: env.MONGO_DB_HOSTS.split(",").map((host) => ({
+      host: host,
+      port: parseInt(env.MONGO_DB_PORT),
+    })),
+    credential: {
+      username: env.MONGO_DB_USERNAME,
+      password: env.MONGO_DB_PASSWORD,
+      db: "planning-v2",
+      mechanism: "SCRAM-SHA-1",
     },
   });
-  const planning_db = mongo_client.database("planning-v2");
 
   try {
     console.log(
