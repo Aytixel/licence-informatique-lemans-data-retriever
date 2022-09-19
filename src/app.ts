@@ -18,8 +18,8 @@ interface Course {
   title: string;
   start_date: Date;
   end_date: Date;
-  description: string;
-  room: string;
+  description: string[];
+  rooms: string[];
 }
 
 interface Day {
@@ -91,10 +91,8 @@ const update = async () => {
               start_date: event.startDate.toJSDate(),
               end_date: event.endDate.toJSDate(),
               description: event.description.trim().split("\n").slice(0, -1)
-                .join(
-                  "\n",
-                ),
-              room: event.location,
+                .map((x) => x.trim()),
+              rooms: event.location.split(",").map((x) => x.trim()),
             },
           );
 
