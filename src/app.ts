@@ -103,6 +103,10 @@ const update = async () => {
         const update_promises = [];
 
         for (const day of planning) {
+          day.courses.sort((a, b) =>
+            a.start_date.getTime() - b.start_date.getTime()
+          );
+
           update_promises.push(
             collection.updateOne({ date: day.date, group: day.group }, {
               $set: day,
