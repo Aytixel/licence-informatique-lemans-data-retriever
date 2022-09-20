@@ -1,6 +1,6 @@
 // third party modules
-export { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
-export type { DotenvConfig } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
+export { config } from "https://deno.land/std@0.156.0/dotenv/mod.ts";
+export type { DotenvConfig } from "https://deno.land/std@0.156.0/dotenv/mod.ts";
 export { MongoClient } from "https://deno.land/x/mongo@v0.31.1/mod.ts";
 export {
   Browser,
