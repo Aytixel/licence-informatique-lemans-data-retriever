@@ -1,4 +1,4 @@
-# Licence-Informatique-LeMans.Tk Data Retriever
+# Licence-Informatique-LeMans.Tk V2 Data Retriever
 [Site Web à destination de toute personne se trouvant en licence informatique à l'université du Mans.](https://github.com/Aytixel/licence-informatique-lemans)
 
 La partie **"Data Retriever"** est celle qui s'occupe de récupérer les emplois du temps et les traiter.
