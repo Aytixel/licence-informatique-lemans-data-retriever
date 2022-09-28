@@ -28,7 +28,7 @@ interface Day {
   courses: Course[];
 }
 
-const env = config();
+const env = await config();
 
 const update = async () => {
   try {
