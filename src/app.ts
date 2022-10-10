@@ -14,7 +14,7 @@ interface Event {
   description: string;
 }
 
-interface Course {
+interface Lesson {
   title: string;
   start_date: Date;
   end_date: Date;
@@ -25,7 +25,7 @@ interface Course {
 interface Day {
   date: Date;
   group: number;
-  courses: Course[];
+  lessons: Lesson[];
 }
 
 const env = await config();
@@ -81,11 +81,11 @@ const update = async () => {
             day_index = planning.push({
               date: date,
               group: resource_id_index,
-              courses: [],
+              lessons: [],
             }) - 1
           ];
 
-          day.courses.push(
+          day.lessons.push(
             {
               title: event.summary,
               start_date: event.startDate.toJSDate(),
@@ -103,7 +103,7 @@ const update = async () => {
         const update_promises = [];
 
         for (const day of planning) {
-          day.courses.sort((a, b) =>
+          day.lessons.sort((a, b) =>
             a.start_date.getTime() - b.start_date.getTime()
           );
 
