@@ -99,6 +99,33 @@ const update = async () => {
           planning[day_index] = day;
         }
 
+        let current_date = keep_only_date(new Date());
+        const end_date = keep_only_date(
+          new Date(Date.now() + new Date(0).setMonth(4)),
+        );
+
+        while (compare_date(current_date, end_date)) {
+          if (!planning.some((day) => !compare_date(day.date, current_date))) {
+            planning.push({
+              date: current_date,
+              group: resource_id_index,
+              lessons: [],
+            });
+          }
+
+          current_date = new Date(
+            current_date.getTime() + new Date(0).setDate(2),
+          );
+        }
+
+        if (!planning.some((day) => !compare_date(day.date, end_date))) {
+          planning.push({
+            date: current_date,
+            group: resource_id_index,
+            lessons: [],
+          });
+        }
+
         const collection = planning_db.collection(resource_type_key);
         const update_promises = [];
 
