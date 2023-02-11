@@ -1,8 +1,7 @@
-import { DotenvConfig } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 import { Browser, Page } from "./deps.ts";
 
 export default function (
-  env: DotenvConfig,
+  env: Record<string, string>,
   browser: Browser,
 ): Promise<Page> {
   const login = async (resolve: (value: Page) => void) => {

@@ -1,8 +1,8 @@
-import { DotenvConfig, puppeteer } from "./deps.ts";
+import { puppeteer } from "./deps.ts";
 import login from "./login.ts";
 import retriever from "./browser/retriever.js";
 
-export default async function (env: DotenvConfig) {
+export default async function (env: Record<string, string>) {
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-dev-shm-usage"],

@@ -1,4 +1,4 @@
-import { config, ICAL, MongoClient } from "./deps.ts";
+import { ICAL, load, MongoClient } from "./deps.ts";
 import retrieve from "./retriever.ts";
 import { compare_date, keep_only_date } from "./utils.ts";
 
@@ -28,7 +28,7 @@ interface Day {
   lessons: Lesson[];
 }
 
-const env = await config();
+const env = await load();
 
 const update = async () => {
   try {
