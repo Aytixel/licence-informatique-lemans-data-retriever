@@ -5,7 +5,11 @@ import retriever from "./browser/retriever.js";
 export default async function (env: Record<string, string>) {
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--no-sandbox", "--disable-dev-shm-usage"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+    ],
   });
   const page = await login(env, browser);
   const planning_raw_data = await page.evaluate(
@@ -14,6 +18,7 @@ export default async function (env: Record<string, string>) {
     JSON.parse(await Deno.readTextFile("./src/planning-resources-id.json")),
   );
 
+  await page.close();
   await browser.close();
 
   return planning_raw_data;
