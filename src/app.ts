@@ -153,11 +153,11 @@ const update = async () => {
 
     mongo_client.close();
 
-    setTimeout(update, 1000 * 60 * 60 * 2);
+    setTimeout(update, 1000 * 60 * 30);
   } catch (error) {
     console.error(error);
 
-    setTimeout(update, 1000 * 60 * 30);
+    setTimeout(update, 1000 * 60 * 15);
   }
 };
 
