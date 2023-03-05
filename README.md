@@ -5,9 +5,7 @@ La partie **"Data Retriever"** est celle qui s'occupe de récupérer les emplois
 
 ## How to run it ?
 To start the server you have to use this command:
- - ***deno run --allow-net --allow-env --allow-read --allow-write --allow-run --unstable src/app.ts***
+ - ***deno run --allow-net --allow-env --allow-read src/app.ts***
 
 To start the server with docker you have to:
- - build the Dockerfile (if it is not done yet) : ***docker build -t licence-info-v2-data-retriever .***
- - and run it with : 
-    - ***docker run -d -v $PWD:/app --restart always --name licence-info-v2-data-retriever licence-info-v2-data-retriever***
+ - ***docker run -d -v $PWD:/app -w /app --restart always --name licence-info-v2-data-retriever denoland/deno:latest run --allow-net --allow-env --allow-read src/app.ts***
