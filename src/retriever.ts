@@ -8,6 +8,9 @@ export default async function (env: Record<string, string>) {
 
   const start_date = convert_date(new Date());
   const end_date = convert_date(new Date(Date.now() + new Date(0).setMonth(4)));
+  const timeout = setTimeout(() => {
+    throw "Timeout : can't fetch planning data !";
+  }, 10000);
 
   const retrieve = async (resource_id: number) =>
     (await fetch(
@@ -25,6 +28,8 @@ export default async function (env: Record<string, string>) {
       );
     }
   }
+
+  clearTimeout(timeout);
 
   return planning_raw_data;
 }
